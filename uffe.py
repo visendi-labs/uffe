@@ -34,11 +34,6 @@ Also very important, check that whatevery you did was correct. If you changed a 
 sure it was changed correctly.
 """
 
-messages = [
-        SystemMessage(content="You're a helpful assistant"),
-        HumanMessage(content="What is the purpose of model regularization?"),
-]
-
 def run_command(command:str)->tuple[str,str]:
     process = subprocess.Popen("bash", stdin=subprocess.PIPE, 
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
