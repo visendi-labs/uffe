@@ -11,7 +11,7 @@ done. The only tool he has access to is your terminal.
 3. Install dependencies `$ pip install -m requirement.txt` 
 4. Run the script.
 
-### Disclaimer
+### ⚠️ Disclaimer ⚠️
 
 Goes without saying but it will cost you money to run this agent. There is no 
 limit of how much, it can very well get stuck in an infinity loop and drain 
