@@ -1,4 +1,2 @@
 python-dotenv
-langchain_openai
-langchain_core
-
+openai
