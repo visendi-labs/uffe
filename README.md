@@ -4,6 +4,8 @@ This is a sub-100 lines LLM agent with a long term memory that can actually perf
 tasks. Uffe is a real doer, he doesn't ask for permission he just gets shit 
 done. The only tool he has access to is your terminal.
 
+Uffe currently only has 1 dependecy: [openai](https://pypi.org/project/openai/)
+
 ### How to Use
 
 1. Clone this repository.

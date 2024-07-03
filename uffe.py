@@ -1,18 +1,23 @@
 import subprocess
 import sys
-from dotenv import load_dotenv
+import os
 from openai import OpenAI
 from pathlib import Path
 
 AGENT_NAME = "Uffe"
-MEMORY_FILE = Path.home() / f".{AGENT_NAME.lower()}"
 LLM = "gpt-4o"
+MEMORY_FILE = Path.home() / f".{AGENT_NAME.lower()}"
 TERM_CMD_PREFIX = "$ "
 COMMAND_PREFIX = ">>>> C:"
-with open("prompts/master.txt") as f:
+INSTALL_DIR = Path(__file__).resolve().parent
+with open(INSTALL_DIR / "prompts" / "master.txt") as f:
     SYSTEM_PROMPT_MASTER = f.read()
-with open("prompts/memorize.txt") as f:
+with open(INSTALL_DIR / "prompts" / "memorize.txt") as f:
     SYSTEM_PROMPT_MEMORIZE = f.read()
+with open(INSTALL_DIR / ".env", 'r') as file:
+    for line in file:
+        key, value = line.strip().split('=', 1)
+        os.environ[key] = value
 
 def memorize(conversation: list[dict[str,str]]) -> None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MEMORIZE.format(memory = recall() or "blank")},
@@ -39,7 +44,6 @@ def fetch_content(content_prefix:str, response:str)->str:
     return response.split(content_prefix)[1].split("\n")[0].lstrip()
 
 def main()->None:
-    load_dotenv()
     if len(sys.argv) < 2:
         print(f"Usage: {AGENT_NAME} <task>")
         exit(1)
