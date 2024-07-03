@@ -1,6 +1,6 @@
 ## Uffe
 
-This is a sub-100 lines (including prompts) LLM agent that can actually perform 
+This is a sub-100 lines LLM agent with a long term memory that can actually perform 
 tasks. Uffe is a real doer, he doesn't ask for permission he just gets shit 
 done. The only tool he has access to is your terminal.
 
