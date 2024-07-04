@@ -10,6 +10,7 @@ MEMORY_FILE = Path.home() / f".{AGENT_NAME.lower()}"
 TERM_CMD_PREFIX = "$ "
 COMMAND_PREFIX = ">>>> C:"
 INSTALL_DIR = Path(__file__).resolve().parent
+SOURCE_LOCATION = INSTALL_DIR / "uffe.py"
 with open(INSTALL_DIR / "prompts" / "master.txt") as f:
     SYSTEM_PROMPT_MASTER = f.read()
 with open(INSTALL_DIR / "prompts" / "memorize.txt") as f:
@@ -18,7 +19,7 @@ with open(INSTALL_DIR / ".env", 'r') as file:
     for line in file:
         key, value = line.strip().split('=', 1)
         os.environ[key] = value
-with open(INSTALL_DIR / "uffe.py") as f:
+with open(SOURCE_LOCATION) as f:
     SOURCE = f.read()
 
 def memorize(conversation: list[dict[str,str]]) -> None:
@@ -49,8 +50,10 @@ def main()->None:
     if len(sys.argv) < 2:
         print(f"Usage: {AGENT_NAME} <task>")
         exit(1)
-    mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(code=SOURCE, memory=recall(), command_prefix=COMMAND_PREFIX)},
+    mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(
+        source_location=SOURCE_LOCATION, code=SOURCE, memory=recall(), command_prefix=COMMAND_PREFIX)},
                    {"role":"user", "content":' '.join(sys.argv[1:])}]
+
     while True: 
         res = OpenAI().chat.completions.create(model=LLM, messages=mes_history, temperature=0.0) # type: ignore
         msg = res.choices[0].message.content
