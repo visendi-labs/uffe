@@ -50,7 +50,7 @@ def main()->None:
         print(f"Usage: {AGENT_NAME} <task>")
         exit(1)
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(code=SOURCE, memory=recall(), command_prefix=COMMAND_PREFIX)},
-                   {"role":"user", "content":sys.argv[1]}]
+                   {"role":"user", "content":' '.join(sys.argv[1:])}]
     while True: 
         res = OpenAI().chat.completions.create(model=LLM, messages=mes_history, temperature=0.0) # type: ignore
         msg = res.choices[0].message.content
