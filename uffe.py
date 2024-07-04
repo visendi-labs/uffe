@@ -18,6 +18,8 @@ with open(INSTALL_DIR / ".env", 'r') as file:
     for line in file:
         key, value = line.strip().split('=', 1)
         os.environ[key] = value
+with open(INSTALL_DIR / "uffe.py") as f:
+    SOURCE = f.read()
 
 def memorize(conversation: list[dict[str,str]]) -> None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MEMORIZE.format(memory = recall() or "blank")},
@@ -47,7 +49,7 @@ def main()->None:
     if len(sys.argv) < 2:
         print(f"Usage: {AGENT_NAME} <task>")
         exit(1)
-    mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(memory=recall() or "no memory", command_prefix=COMMAND_PREFIX)},
+    mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(code=SOURCE, memory=recall(), command_prefix=COMMAND_PREFIX)},
                    {"role":"user", "content":sys.argv[1]}]
     while True: 
         res = OpenAI().chat.completions.create(model=LLM, messages=mes_history, temperature=0.0) # type: ignore
