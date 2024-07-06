@@ -40,7 +40,7 @@ def recall() -> str:
 def run_command(command:str)->tuple[str,str]:
     process = subprocess.Popen("bash", stdin=subprocess.PIPE, 
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-                               text=True, shell=True)
+                               text=True, shell=True, encoding="utf-8")
     return process.communicate(command)
 
 def fetch_content(content_prefix:str, response:str)->str:
