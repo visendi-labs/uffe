@@ -6,6 +6,8 @@ done. The only tool he has access to is your terminal.
 
 Uffe currently only has 1 dependency: [openai](https://pypi.org/project/openai/)
 
+https://github.com/visendi-labs/uffe/assets/7818582/c877882d-cde0-490f-bcdc-fb54b30451d9
+
 ### How to Use
 
 1. Clone this repository.
