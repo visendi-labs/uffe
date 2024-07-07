@@ -1,24 +1,28 @@
-## Uffe
-
-This is a sub-100 lines LLM agent with a long term memory that can actually perform
-tasks. Uffe is a real doer, he doesn't ask for permission he just gets shit
-done. The only tool he has access to is your terminal.
+Uffe is 
+* a **sub-100 lines** LLM agent. 
+* fitted with **long term memory**.
+* **self-conscious** in the sense that all the code in uffe.py is injected into the system prompt.
+* going to **use your terminal**. Whatever you have access to, uffe has access to.
+* a real doer, he will probably not ask for permission, he just gets things done.
 
 Uffe currently only has 1 dependency: [openai](https://pypi.org/project/openai/)
 
-### How to Use
+https://github.com/visendi-labs/uffe/assets/7818582/c877882d-cde0-490f-bcdc-fb54b30451d9
+
+### How to install ⚙️
 
 1. Clone this repository.
 2. Ensure you have a `.env` containing OPENAI_API_KEY.
 3. Install dependencies `$ pip install -r requirement.txt`
 4. Run the script.
 
-### ⚠️ Disclaimer ⚠️
+### Disclaimer ⚠️ 
 
-Goes without saying but it will cost you money to run this agent. There is no
-limit of how much, it can very well get stuck in an infinity loop and drain
-your OpenAI account.
+Goes without saying but although this repository is completely open source and free, OpenAI will charge you money for using their LLM. 
+There is no limit of how much tokens uffe will use, it can very well get stuck in an infinite loop and drain your OpenAI account.
 
-Use with caution, this agent can (and probably will) do unexpected things using
-your computer. It has access to whatever you have access to. Use with caution.
-We do not take responsibility for any damages caused by using this.
+Use with caution, this agent can (and probably will) do unexpected things using your computer. It has access to whatever you have access to. 
+Use with caution. We do not take responsibility for any damages caused by using this.
+
+### TODO 📝
+- Remove OpenAI dependency
