@@ -25,7 +25,7 @@ with open(SOURCE_LOCATION) as f:
 
 def memorize(conversation: list[dict[str,str]]) -> None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MEMORIZE.format(memory = recall() or "blank")},
-                   {"role":"user", "content": f"This is what happened: {conversation}"}]
+                   {"role":"user", "content":f"This is what happened: {conversation}"}]
     new_memory = chat(mes_history)
     with open(MEMORY_FILE, 'w') as f:
         f.write(new_memory)
@@ -37,18 +37,15 @@ def recall() -> str:
     except FileNotFoundError:
         return ""
 
-def run_command(command:str)->tuple[str,str]:
-    process = subprocess.Popen("bash", stdin=subprocess.PIPE, 
+def run_command(command:str)->str:
+    stdout, stderr = subprocess.Popen("bash", stdin=subprocess.PIPE, 
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-                               text=True, shell=True, encoding="utf-8")
-    return process.communicate(command)
-
-def fetch_content(content_prefix:str, response:str)->str:
-    return response.split(content_prefix)[1].split("\n")[0].lstrip()
+                               text=True, shell=True, encoding="utf-8").communicate(command)
+    return stdout or stderr
 
 def chat(mes_history:list[dict[str,str]])->str:
-    headers = {'Content-Type': 'application/json','Authorization': f'Bearer {os.getenv("OPENAI_API_KEY")}'}
-    data = {'model': LLM, 'messages': mes_history}
+    headers = {'Content-Type':'application/json','Authorization':f'Bearer {os.getenv("OPENAI_API_KEY")}'}
+    data = {'model':LLM, 'messages':mes_history}
     return requests.post(LLM_URL, json=data, headers=headers).json()['choices'][0]['message']['content']
 
 def main()->None:
@@ -62,19 +59,19 @@ def main()->None:
         msg = chat(mes_history)
         mes_history.append({"role":"system", "content":msg})
         if COMMAND_PREFIX in msg:
-            cmd = fetch_content(COMMAND_PREFIX, msg)
+            cmd = msg.split(COMMAND_PREFIX)[1].lstrip()
             print(f"{TERM_CMD_PREFIX}{cmd}") 
-            std_out, std_err = run_command(cmd)
-            print(f"{std_err or std_out}")
-            mes_history.append({"role":"user", "content":f"$ {cmd} {std_out or std_err}"})
+            cmd_out = run_command(cmd)
+            print(f"{cmd_out}")
+            mes_history.append({"role":"user", "content":f"{TERM_CMD_PREFIX}{cmd}\n{cmd_out}"})
         elif msg[-1] == "?":
             user_resp = input(f"{msg}\n>> ")
             mes_history.append({"role":"user", "content":user_resp})
         else: 
             comment = msg
-            mes_history.append({"role":"user", "content": comment})
+            mes_history.append({"role":"user", "content":comment})
             break
-    print(f"{AGENT_NAME}: {comment or ''}")
+    if comment: print(f"{AGENT_NAME}: {comment}")
     print(f"{AGENT_NAME}: Memorizing noteworthy details...")
     memorize(mes_history[1:])
 
