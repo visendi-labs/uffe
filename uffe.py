@@ -1,11 +1,12 @@
 import subprocess
 import sys
 import os
-from openai import OpenAI
+import requests
 from pathlib import Path
 
 AGENT_NAME = "Uffe"
 LLM = "gpt-4o"
+LLM_URL = 'https://api.openai.com/v1/chat/completions'
 MEMORY_FILE = Path.home() / f".{AGENT_NAME.lower()}"
 TERM_CMD_PREFIX = "$ "
 COMMAND_PREFIX = ">>>> C:"
@@ -25,8 +26,7 @@ with open(SOURCE_LOCATION) as f:
 def memorize(conversation: list[dict[str,str]]) -> None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MEMORIZE.format(memory = recall() or "blank")},
                    {"role":"user", "content": f"This is what happened: {conversation}"}]
-    new_memory = OpenAI().chat.completions.create(model=LLM, messages=mes_history, temperature=0.0).choices[0].message.content # type: ignore
-    assert new_memory is not None
+    new_memory = chat(mes_history)
     with open(MEMORY_FILE, 'w') as f:
         f.write(new_memory)
 
@@ -46,6 +46,11 @@ def run_command(command:str)->tuple[str,str]:
 def fetch_content(content_prefix:str, response:str)->str:
     return response.split(content_prefix)[1].split("\n")[0].lstrip()
 
+def chat(mes_history:list[dict[str,str]])->str:
+    headers = {'Content-Type': 'application/json','Authorization': f'Bearer {os.getenv("OPENAI_API_KEY")}'}
+    data = {'model': LLM, 'messages': mes_history}
+    return requests.post(LLM_URL, json=data, headers=headers).json()['choices'][0]['message']['content']
+
 def main()->None:
     if len(sys.argv) < 2:
         print(f"Usage: {AGENT_NAME} <task>")
@@ -53,11 +58,8 @@ def main()->None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MASTER.format(
         source_location=SOURCE_LOCATION, code=SOURCE, memory=recall(), command_prefix=COMMAND_PREFIX)},
                    {"role":"user", "content":' '.join(sys.argv[1:])}]
-
     while True: 
-        res = OpenAI().chat.completions.create(model=LLM, messages=mes_history, temperature=0.0) # type: ignore
-        msg = res.choices[0].message.content
-        assert msg is not None
+        msg = chat(mes_history)
         mes_history.append({"role":"system", "content":msg})
         if COMMAND_PREFIX in msg:
             cmd = fetch_content(COMMAND_PREFIX, msg)
