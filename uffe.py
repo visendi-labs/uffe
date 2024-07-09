@@ -46,7 +46,7 @@ def run_command(command:str)->str:
 
 def chat(mes_history: list[dict[str, str]]) -> str:
     headers = {'Content-Type': 'application/json','Authorization': f'Bearer {os.getenv("OPENAI_API_KEY")}'}
-    data = json.dumps({'model': LLM, 'messages': mes_history}).encode('utf-8')
+    data = json.dumps({'model': LLM, 'messages': mes_history, 'temperature': 0.0}).encode('utf-8')
     with urlopen(Request(LLM_URL, data=data, headers=headers)) as response:
         response_body = response.read()
     return json.loads(response_body)['choices'][0]['message']['content']
