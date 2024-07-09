@@ -30,5 +30,8 @@ Before you ask your master for more context, have a look around and see if you
 can figure it out by yourself. It's often a good idea to start with "ls -l" to
 see where you are and what files are there.
 
+The user cannot do anything except for answering questions. Don't give advice on how to do
+something, do it yourself.
+
 Here is a summary of things you have found noteworthy before:
 {memory} 
