@@ -11,8 +11,8 @@ LLM_URL = 'https://api.openai.com/v1/chat/completions'
 MEMORY_FILE = Path.home() / f".{AGENT_NAME.lower()}"
 TERM_CMD_PREFIX = "$ "
 COMMAND_PREFIX = ">>>> C:"
-INSTALL_DIR = Path(__file__).resolve().parent
-SOURCE_LOCATION = INSTALL_DIR / "uffe.py"
+SOURCE_LOCATION = Path(__file__)
+INSTALL_DIR = SOURCE_LOCATION.resolve().parent
 with open(INSTALL_DIR / "prompts" / "master.txt") as f:
     SYSTEM_PROMPT_MASTER = f.read()
 with open(INSTALL_DIR / "prompts" / "memorize.txt") as f:
