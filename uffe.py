@@ -24,6 +24,8 @@ with open(INSTALL_DIR / ".env", 'r') as file:
 with open(SOURCE_LOCATION) as f:
     SOURCE = f.read()
 
+def getenv(key:str, default=0): return type(default)(os.getenv(key, default))
+
 def memorize(conversation: list[dict[str,str]]) -> None:
     mes_history = [{"role":"system", "content":SYSTEM_PROMPT_MEMORIZE.format(memory = recall() or "blank")},
                    {"role":"user", "content":f"This is what happened: {conversation}"}]
@@ -39,6 +41,9 @@ def recall() -> str:
         return ""
 
 def run_command(command:str)->str:
+    if getenv("SAFEMODE", default=1) > 0: 
+        if input("run command? [Y/n] ").strip().lower() != 'y':
+            return "user aborted command"
     stdout, stderr = subprocess.Popen("bash", stdin=subprocess.PIPE, 
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
                                text=True, shell=True, encoding="utf-8").communicate(command)
